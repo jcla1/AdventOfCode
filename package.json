@@ -5,7 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["advent of code", "puzzle"],
+  "keywords": [
+    "advent of code",
+    "puzzle"
+  ],
   "author": "Joseph Adams",
   "license": "MIT",
   "dependencies": {
