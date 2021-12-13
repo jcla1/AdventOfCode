@@ -9,7 +9,7 @@ const nums = R.compose(
     R.head)(input);
 
 const parseBoard = R.map(R.compose(
-    R.map((x) => parseInt(x)),
+    R.map(parseInt),
     R.filter(R.compose(R.not, R.equals(''))),
     R.split(' ')));
 
