@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day7.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day07.input', 'utf8').trim();
 
 const parseRule = R.compose(
   m => {
@@ -14,7 +14,7 @@ const parseRule = R.compose(
       )(m['inside'])];
   },
   R.prop('groups'),
-  R.match(/^(?<color>.*) bags contain (?<inside>no other bags|.+)\.$/)); 
+  R.match(/^(?<color>.*) bags contain (?<inside>no other bags|.+)\.$/));
 
 const rules =  R.o(R.map(parseRule), R.split('\n'))(input);
 

@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day6.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day06.input', 'utf8').trim();
 
 const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 

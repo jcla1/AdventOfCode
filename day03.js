@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day3.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day03.input', 'utf8').trim();
 
 const forest = R.compose(R.map(R.split('')), R.split('\n'))(input);
 const height = R.length(forest); const width = R.length(forest[0]);

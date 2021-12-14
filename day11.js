@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day11.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day11.input', 'utf8').trim();
 
 const seatBoard = R.compose(
     R.map(R.split('')),

@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day5.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day05.input', 'utf8').trim();
 
 const seatDesc = R.split('\n', input);
 

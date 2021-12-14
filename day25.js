@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day25.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day25.input', 'utf8').trim();
 const [cardPK, doorPK] = R.compose(R.map(parseInt), R.split('\n'))(input);
 
 const base = 20201227;

@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day8.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day08.input', 'utf8').trim();
 
 const parseInstr = R.o(R.slice(1, 3), R.match(/^(.+) (.+)$/));
 
@@ -27,7 +27,7 @@ const runProgram = (instr) => {
       case 'jmp':
         const diff = parseInt(val);
         if (diff === 0) return [false, acc];
-        
+
         ip += parseInt(val) - 1; break;
     }
 

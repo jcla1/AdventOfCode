@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day10.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day10.input', 'utf8').trim();
 
 const maximum = R.reduce(R.max, -Infinity);
 const ratings = R.compose(
