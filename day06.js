@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day6.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day06.input', 'utf8').trim();
 
 const initialFish = R.compose(
     R.map((p) => [parseInt(p[0]), R.length(p[1])]),

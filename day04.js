@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day4.input', 'utf8').split('\n');
+const input = fs.readFileSync('inputs/day04.input', 'utf8').split('\n');
 
 const nums = R.compose(
     R.map(parseInt),

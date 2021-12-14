@@ -4,7 +4,7 @@ const fs = require('fs');
 // WARNING: This solution won't work for part 2 of this day
 // in repl.it since we're using around 1.5GB of memory - no
 // idea why it's such a huge amount.
-const input = fs.readFileSync('day5.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day05.input', 'utf8').trim();
 
 const lines = R.compose(
     R.map(R.compose(

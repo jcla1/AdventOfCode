@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day12.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day12.input', 'utf8').trim();
 
 const graph = R.compose(
     R.map(R.map(R.nth(1))),

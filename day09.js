@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day9.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day09.input', 'utf8').trim();
 
 const board = R.compose(
     R.map(R.o(R.map(parseInt), R.split(''))),

@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day11.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day11.input', 'utf8').trim();
 
 const mapBoard = (f) => R.map(R.map(f));
 const cleanBoard = mapBoard(R.max(0));

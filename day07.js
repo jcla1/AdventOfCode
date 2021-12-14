@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day7.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day07.input', 'utf8').trim();
 
 const crabPos = R.compose(
     R.map(parseInt),

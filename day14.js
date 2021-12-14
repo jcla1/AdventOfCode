@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day14.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day14.input', 'utf8').trim();
 
 const maximum = R.reduce(R.max, -Infinity);
 const minimum = R.reduce(R.min, Infinity);

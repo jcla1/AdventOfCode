@@ -1,7 +1,7 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const input = fs.readFileSync('day13.input', 'utf8').trim();
+const input = fs.readFileSync('inputs/day13.input', 'utf8').trim();
 
 const [boardInfo, foldDirections] = R.compose(
     R.map(R.split('\n')),
