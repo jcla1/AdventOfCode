@@ -11,18 +11,10 @@ const cave = R.compose(
     R.map(R.o(R.map(parseInt), R.split(''))),
     R.split('\n'))(input);
 
-// breadth first search - gives the shortest distance from a start node to the
-// bottom right node in the graph.
-const astar = (graph) => {
-  const start = [0, 0];
-  const goal = [R.length(graph)-1, R.length(graph[0])-1];
-
-  // Turns out: A* with a trivial heuristic (i.e. Dijkstra's algorithm) is
-  // faster in this case. On a Late 2013 MBP by about 200ms (total runtime: 3.5
-  // vs 3.3s)
-  const h = R.always(0);
-  // const h = ([i, j], [s, t]) => Math.abs(i - s) + Math.abs(j - t);
-
+// A* search algorithm, in this particular case reducing it to Dijkstra's
+// algorithm improves the runtime, by about 200ms consistently.
+// total runtime: 3.5 vs 3.3s on a Late 2013 MBP.
+const astar = (graph, start, goal, h = R.always(0)) => {
   const openSet = new Heap((a, b) => a[0] - b[0]);
   openSet.push([h(start, goal), start]);
 
@@ -42,7 +34,7 @@ const astar = (graph) => {
       if (tentativeGScore < U.get(gScore, neighbour)) {
         U.set(gScore, neighbour, tentativeGScore);
 
-        // Not sure why the pseudo-code implementation of this on wikipedia
+        // Not sure why the pseudo-code implementation of this on Wikipedia
         // conditions the addition of the neighbour to the heap on if it's
         // already present.
         // If it is, but with a higher cost/score than this one, then it will
@@ -55,7 +47,7 @@ const astar = (graph) => {
   return 'not found.';
 };
 
-console.log(astar(cave));
+console.log(astar(cave, [0, 0], [R.length(cave)-1, R.length(cave[0])-1]));
 
 const wrapNines = (n) => n > 9 ? (n % 10) + 1 : n;
 
@@ -63,10 +55,11 @@ const extendDown = (board) => R.unnest(
     R.map((k) => U.mapBoard(R.o(wrapNines, R.add(k)), board),
         R.range(0, 5)));
 
-const biggerCaveMap = R.compose(
+const bigCave = R.compose(
     R.transpose,
     extendDown,
     R.transpose,
     extendDown)(cave);
 
-console.log(astar(biggerCaveMap));
+console.log(astar(bigCave, [0, 0],
+    [R.length(bigCave)-1, R.length(bigCave[0])-1]));
