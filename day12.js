@@ -1,6 +1,8 @@
 const R = require('ramda');
 const fs = require('fs');
 
+const U = require('./util.js');
+
 const input = fs.readFileSync('inputs/day12.input', 'utf8').trim();
 
 const graph = R.compose(
@@ -11,19 +13,16 @@ const graph = R.compose(
     R.map(R.split('-')),
     R.split('\n'))(input);
 
-const isUpperCase = (s) => s === s.toUpperCase();
-const maximum = R.reduce(R.max, -Infinity);
-
 const isValidNext = R.curry((noVisit, maxVisit, cave) => {
   if (cave === 'start') return false;
-  if (isUpperCase(cave) || !R.has(cave, noVisit)) return true;
-  return maximum(R.values(noVisit)) < maxVisit;
+  if (U.isUpperCase(cave) || !R.has(cave, noVisit)) return true;
+  return U.maximum(R.values(noVisit)) < maxVisit;
 });
 
 const findPaths = (graph, from, to, maxVisit = 1, noVisit = {}) => {
   if (from === to) return [[to]];
 
-  const addInVisits = isUpperCase(from) ? {} : R.fromPairs([[from, 1]]);
+  const addInVisits = U.isUpperCase(from) ? {} : U.toDict([from, 1]);
   const visitCounts = R.mergeWith(R.add, addInVisits, noVisit);
 
   return R.compose(

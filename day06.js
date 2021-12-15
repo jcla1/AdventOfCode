@@ -16,7 +16,7 @@ const spawnFish = (p) => {
 };
 
 const combineFish = R.compose(
-    R.map((p) => [parseInt(p[0]), R.compose(R.sum, R.map(R.nth(1)))(p[1])]),
+    R.map(([m, counts]) => [parseInt(m), R.o(R.sum, R.map(R.nth(1)))(counts)]),
     R.toPairs,
     R.groupBy(R.nth(0)));
 

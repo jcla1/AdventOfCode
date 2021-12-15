@@ -35,8 +35,7 @@ const getRating = (cmp) => {
           (xs, n) => {
             const mb = majorityBits(xs)[n];
             return R.filter((x) => cmp(x[n], mb), xs);
-          }, nums),
-  )(R.range(0, noCols));
+          }, nums))(R.range(0, noCols));
 };
 
 const oxygen = getRating(R.equals);

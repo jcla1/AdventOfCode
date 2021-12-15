@@ -1,6 +1,8 @@
 const R = require('ramda');
 const fs = require('fs');
 
+const U = require('./util.js');
+
 const input = fs.readFileSync('inputs/day13.input', 'utf8').trim();
 
 const [boardInfo, foldDirections] = R.compose(
@@ -25,13 +27,6 @@ const extendBoard = (board, size) => {
       R.range(0, size - height + 1)));
 };
 
-const sign = (x) => x === 0 ? 0 : (x > 0 ? 1 : -1);
-const addBoards = R.zipWith(R.zipWith(R.add));
-const boardToString = R.compose(
-    R.join('\n'),
-    R.map(R.join('')),
-    R.map(R.map((n) => n > 0 ? '#' : '.')));
-
 // WARNING: potentially mutates the board
 const markBoard = (board, p) => {
   const height = R.length(board);
@@ -50,7 +45,7 @@ const doFold = (board, [dir, idx]) => {
   board = transformFn[dir](board);
 
   const [top, bottom] = R.splitAt(idx, board);
-  const foldedBoard = addBoards(top, R.reverse(R.drop(1, bottom)));
+  const foldedBoard = U.addBoards(top, R.reverse(R.drop(1, bottom)));
 
   return transformFn[dir](foldedBoard);
 };
@@ -60,7 +55,9 @@ const foldedBoard = R.reduce(doFold, board, folds);
 
 console.log(R.compose(
     R.sum,
-    R.map(sign),
+    R.map(U.sign),
     R.flatten)(doFold(board, folds[0])));
 
-console.log(boardToString(foldedBoard));
+console.log(R.o(
+    U.boardToString,
+    U.mapBoard((n) => n > 0 ? '#' : '.'))(foldedBoard));

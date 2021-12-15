@@ -1,6 +1,8 @@
 const R = require('ramda');
 const fs = require('fs');
 
+const U = require('./util.js');
+
 // WARNING: This solution won't work for part 2 of this day
 // in repl.it since we're using around 1.5GB of memory - no
 // idea why it's such a huge amount.
@@ -13,7 +15,6 @@ const lines = R.compose(
         R.match(/(\d+),(\d+) -> (\d+),(\d+)/))),
     R.split('\n'))(input);
 
-const sign = (n) => (n > 0) ? 1 : (n < 0) ? -1 : 0;
 const isGridLine = (l) => l[0] === l[2] || l[1] === l[3];
 const addBoards = R.mergeDeepWith(R.add);
 
@@ -22,7 +23,7 @@ const drawLine = (line) => {
   const end = R.slice(2, 4, line);
 
   const direction = R.compose(
-      R.map(sign),
+      R.map(U.sign),
       R.zipWith(R.subtract))(end, start);
 
   return R.compose(

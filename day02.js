@@ -4,42 +4,40 @@ const fs = require('fs');
 const input = fs.readFileSync('inputs/day02.input', 'utf8').trim();
 
 const cmds = R.compose(
-    R.map(R.pipe(R.split(' '), (c) => [c[0], parseInt(c[1])])),
+    R.map(R.o(([cmd, dist]) => [cmd, parseInt(dist)], R.split(' '))),
     R.split('\n'))(input);
 
-const encode = function(cmd) {
-  switch (cmd[0]) {
-  // the "unnecessary" multiplication is there for forcing
-  // the distance into a number.
-    case 'forward': return [0, cmd[1]];
-    case 'up': return [-1*cmd[1], 0];
-    case 'down': return [cmd[1], 0];
+const encode = ([cmd, dist]) => {
+  switch (cmd) {
+    case 'forward': return [0, dist];
+    case 'up': return [-1*dist, 0];
+    case 'down': return [dist, 0];
   }
 };
 
 const part1 = R.compose(
-    R.reduce(R.multiply, 1),
+    R.product,
     R.reduce(R.zipWith(R.add), [0, 0]),
-    R.map(encode),
-)(cmds);
+    R.map(encode))(cmds);
 
 console.log(part1);
 
-const transduce = function(prev, cmd) {
+const process = ([aim, depth, pos], [cmd, dist]) => {
   // prev contains an encoding of the current state
   // of the submarine. prev[0] is the aim, prev[1]
   // is the depth and prev[2] is the horizontal position.
 
-  switch (cmd[0]) {
+  switch (cmd) {
     case 'forward': return [
-      prev[0],
-      prev[1] + cmd[1] * prev[0],
-      prev[2] + cmd[1]];
-    case 'up': return [prev[0] - cmd[1], prev[1], prev[2]];
-    case 'down': return [prev[0] + cmd[1], prev[1], prev[2]];
+      aim,
+      depth + dist * aim,
+      pos + dist,
+    ];
+    case 'up': return [aim - dist, depth, pos];
+    case 'down': return [aim + dist, depth, pos];
   }
 };
 
-const subInfo = R.reduce(transduce, [0, 0, 0], cmds);
+const subInfo = R.reduce(process, [0, 0, 0], cmds);
 
 console.log(subInfo[1] * subInfo[2]);

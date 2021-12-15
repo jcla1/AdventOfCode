@@ -1,41 +1,19 @@
 const R = require('ramda');
 const fs = require('fs');
 
+const U = require('./util.js');
+
 const input = fs.readFileSync('inputs/day11.input', 'utf8').trim();
-
-const mapBoard = (f) => R.map(R.map(f));
-const cleanBoard = mapBoard(R.max(0));
-const access = (board, [i, j]) => board[i][j];
-const boardIndicies = (board) => {
-  const height = R.length(board);
-  const width = R.length(board[0]);
-  return R.chain(
-      (i) => R.map((j) => [i, j], R.range(0, width)),
-      R.range(0, height));
-};
-
-const withinBoard = R.curry((board, [i, j]) => {
-  const height = R.length(board);
-  const width = R.length(board[0]);
-  return 0 <= i && i < height && 0 <= j && j < width;
-});
-
-const getNeighbours = R.curry((board, [i, j]) => {
-  return R.filter(withinBoard(board),
-      [[i-1, j-1], [i-1, j], [i-1, j+1],
-        [i, j-1], [i, j+1],
-        [i+1, j-1], [i+1, j], [i+1, j+1]]);
-});
 
 const willFlash = R.compose(
     R.reduce(R.or, false),
     R.flatten,
-    mapBoard(R.lte(10)));
+    U.mapBoard(R.lte(10)));
 
 const flash = (board) => {
   const flashPoints = R.filter(
-      (p) => access(board, p) >= 10,
-      boardIndicies(board));
+      (p) => U.get(board, p) >= 10,
+      U.getIndicies(board));
 
   board = R.clone(board);
   const newBoard = R.reduce((board, [i, j]) => {
@@ -43,7 +21,7 @@ const flash = (board) => {
     return board;
   }, board, flashPoints);
 
-  const addList = R.chain(getNeighbours(board), flashPoints);
+  const addList = R.chain((p) => U.getNeighbours(board, p, true), flashPoints);
   addList.forEach((pos) => {
     const [s, t] = pos;
     if (board[s][t] !== -1) board[s][t] += 1;
@@ -53,13 +31,13 @@ const flash = (board) => {
 };
 
 const doStep = R.compose(
-    ([count, board]) => [count, cleanBoard(board)],
+    ([count, board]) => [count, U.mapBoard(R.max(0), board)],
     R.until(R.compose(R.not, willFlash, R.nth(1)), ([total, board]) => {
       const [count, newBoard] = flash(board);
       return [total + count, newBoard];
     }),
     (board) => [0, board],
-    mapBoard(R.inc));
+    U.mapBoard(R.inc));
 
 const board = R.compose(
     R.map(R.map(parseInt)),
