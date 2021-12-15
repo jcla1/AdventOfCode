@@ -16,7 +16,12 @@ const cave = R.compose(
 const astar = (graph) => {
   const start = [0, 0];
   const goal = [R.length(graph)-1, R.length(graph[0])-1];
-  const h = ([i, j], [s, t]) => Math.abs(i - s) + Math.abs(j - t);
+
+  // Turns out: A* with a trivial heuristic (i.e. Dijkstra's algorithm) is
+  // faster in this case. On a Late 2013 MBP by about 200ms (total runtime: 3.5
+  // vs 3.3s)
+  const h = R.always(0);
+  // const h = ([i, j], [s, t]) => Math.abs(i - s) + Math.abs(j - t);
 
   const openSet = new Heap((a, b) => a[0] - b[0]);
   openSet.push([h(start, goal), start]);
