@@ -1,12 +1,13 @@
 const R = require('ramda');
 const fs = require('fs');
 
+const U = require('./util.js');
+
 const input = fs.readFileSync('inputs/day10.input', 'utf8').trim();
 
-const maximum = R.reduce(R.max, -Infinity);
 const ratings = R.compose(
     R.sortBy(R.identity),
-    (xs) => R.concat([0, maximum(xs) + 3], xs),
+    (xs) => R.concat([0, U.maximum(xs) + 3], xs),
     R.map(parseInt),
     R.split('\n'))(input);
 
