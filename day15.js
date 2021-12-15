@@ -1,19 +1,9 @@
 const R = require('ramda');
 const fs = require('fs');
 
+const {Heap} = require('heap-js');
+
 const input = fs.readFileSync('inputs/day15.input', 'utf8').trim();
-// const input = `
-// 1163751742
-// 1381373672
-// 2136511328
-// 3694931569
-// 7463417111
-// 1319128137
-// 1359912421
-// 3125421639
-// 1293138521
-// 2311944581
-// `.trim();
 
 const cave = R.compose(
     R.map(R.o(R.map(parseInt), R.split(''))),
@@ -32,7 +22,7 @@ const getNeighbours = R.curry((board, [i, j]) => R.filter(onBoard(board), [
   [i-1, j], [i, j-1], [i, j+1], [i+1, j],
 ]));
 
-const get = R.curry((board, p) => R.view(R.lensPath(p), board));
+const get = (board, p) => board[p[0]][p[1]];
 const set = (board, p, v) => {
   board[p[0]][p[1]] = v;
 };
@@ -55,40 +45,61 @@ const indicies = (board) => {
 };
 
 const mapBoard = (f, board) => R.map(R.map(f), board);
-const printBoard = R.compose(
-    console.log,
-    R.join('\n'),
-    R.map(R.join(',')));
+
+const boardToString = R.o(R.join('\n'), R.map(R.join(',')));
+const printBoard = R.o(console.log, boardToString);
 
 // breadth first search - gives the shortest distance from a start node to the
 // bottom right node in the graph.
-const dijkstra = (graph, start) => {
-  const finalNode = [R.length(graph)-1, R.length(graph[0])-1];
+const astar = (graph) => {
+  const start = [0, 0];
+  const goal = [R.length(graph)-1, R.length(graph[0])-1];
+  const h = ([i, j], [s, t]) => Math.abs(i - s) + Math.abs(j - t);
 
-  let q = indicies(graph);
-  const dists = mapBoard((_) => Infinity, zerosLike(graph));
-  set(dists, start, 0);
+  const openSet = new Heap((a, b) => a[0] - b[0]);
+  openSet.push([h(start, goal), start]);
 
-  while (R.length(q) !== 0) {
-    const node = R.reduce(R.minBy((a, b) => get(dists, a)), R.nth(0, q), q);
-    q = R.without([node], q);
+  // we don't need an fScore, as that's hidden in the MinHeap
+  const gScore = mapBoard((_) => Infinity, zerosLike(graph));
+  set(gScore, start, 0);
+
+  while (openSet.length !== 0) {
+    const [_, node] = openSet.pop();
+    if (R.equals(node, goal)) return get(gScore, node);
 
     const neighbours = getNeighbours(graph, node);
     for (let i = 0; i < R.length(neighbours); i++) {
       const neighbour = neighbours[i];
-      if (!R.includes(neighbour, q)) continue;
 
-      const alt = get(dists, node) + get(graph, neighbour);
+      const tentativeGScore = get(gScore, node) + get(graph, neighbour);
+      if (tentativeGScore < get(gScore, neighbour)) {
+        set(gScore, neighbour, tentativeGScore);
 
-      if (alt < get(dists, neighbour)) {
-        set(dists, neighbour, alt);
+        // Not sure why the pseudo-code implementation of this on wikipedia
+        // conditions the addition of the neighbour to the heap on if it's
+        // already present.
+        // If it is, but with a higher cost/score than this one, then it will
+        // simply be ignored if we're just trying to solve the point-to-point
+        // problem.
+        openSet.push([tentativeGScore + h(neighbour, goal), neighbour]);
       }
-
-      if (R.equals(finalNode, neighbour)) return get(dists, finalNode);
     }
   }
-
-  return dists;
+  return 'not found.';
 };
 
-console.log(dijkstra(cave, [0, 0]));
+console.log(astar(cave));
+
+const wrapNines = (n) => n > 9 ? (n % 10) + 1 : n;
+
+const extendDown = (board) => R.unnest(
+    R.map((k) => mapBoard(R.o(wrapNines, R.add(k)), board),
+        R.range(0, 5)));
+
+const biggerCaveMap = R.compose(
+    R.transpose,
+    extendDown,
+    R.transpose,
+    extendDown)(cave);
+
+console.log(astar(biggerCaveMap));

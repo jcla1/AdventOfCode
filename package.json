@@ -12,8 +12,8 @@
   "author": "Joseph Adams",
   "license": "MIT",
   "dependencies": {
-    "logic_js": "0.0.3",
-    "ramda": "^0.27.1"
+    "ramda": "^0.27.1",
+    "heap-js": "2.1.6"
   },
   "devDependencies": {
     "eslint": "^8.4.1",
