@@ -49,7 +49,7 @@ const astar = (graph, start, goal, h = R.always(0)) => {
 
 console.log(astar(cave, [0, 0], [R.length(cave)-1, R.length(cave[0])-1]));
 
-const wrapNines = (n) => n > 9 ? (n % 10) + 1 : n;
+const wrapNines = (n) => n > 9 ? n % 9 : n;
 
 const extendDown = (board) => R.unnest(
     R.map((k) => U.mapBoard(R.o(wrapNines, R.add(k)), board),
