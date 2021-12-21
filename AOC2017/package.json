@@ -1,0 +1,26 @@
+{
+  "name": "AOC2017",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcla1/AOC2017.git"
+  },
+  "author": "Joseph Adams",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jcla1/AOC2017/issues"
+  },
+  "homepage": "https://github.com/jcla1/AOC2017#readme",
+  "dependencies": {
+    "ramda": "^0.27.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.4.1",
+    "eslint-config-google": "^0.14.0"
+  }
+}
