@@ -25,4 +25,7 @@ const numberOfLit = R.o(U.sumBoard, U.mapBoard(lightToNum));
 console.log(numberOfLit(advanceBoard(advanceBoard(board, 2, '.'), 3, '#')));
 
 console.log(numberOfLit(
-    R.reduce((img, _) => advanceBoard(advanceBoard(img, 2, '.'), 3, '#'), board, R.range(0, 25))));
+    R.reduce(
+        (img, _) => advanceBoard(advanceBoard(img, 2, '.'), 3, '#'),
+        board,
+        R.range(0, 25))));

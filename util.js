@@ -70,7 +70,6 @@ const getNeighbours = R.curry((board, [i, j], diag = false) =>
             diag ? [[i-1, j-1], [i-1, j+1], [i+1, j-1], [i+1, j+1]] : [])));
 
 const pad = (img, n = 2, item = '.') => {
-  const height = R.length(img);
   const width = R.length(img[0]);
   const topBottom = R.map((_) => R.repeat(item, width + 2*n), R.range(0, n));
 

@@ -1,8 +1,6 @@
 const R = require('ramda');
 const fs = require('fs');
 
-const U = require('./util.js');
-
 const input = fs.readFileSync('inputs/day21.input', 'utf8').trim();
 
 const startPos = R.compose(
@@ -36,14 +34,16 @@ const determinsiticGame = ([p1, p2]) => {
 
 console.log(determinsiticGame(startPos));
 
-const possibleSeqs = R.map(R.o(R.sum, R.unnest), R.xprod(R.xprod([1, 2, 3], [1, 2, 3]), [1, 2, 3]));
+const possibleSeqs = R.map(
+    R.o(R.sum, R.unnest),
+    R.xprod(R.xprod([1, 2, 3], [1, 2, 3]), [1, 2, 3]));
 const quantumGame = R.memoizeWith(
     R.unapply(R.toString),
     ([p1, p2], [p1Score, p2Score]) => {
       p1 %= 10; p2 %= 10;
 
-      // Only need to check on p2, since he's always going to be the last updated
-      // player.
+      // Only need to check on p2, since he's always going to be the last
+      // updated player.
       if (p2Score >= 21) return [0, 1];
 
       return R.reduce(R.zipWith(R.add), [0, 0],
