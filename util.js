@@ -75,18 +75,18 @@ const pad = (img, n = 2, item = '.') => {
   const topBottom = R.map((_) => R.repeat(item, width + 2*n), R.range(0, n));
 
   return R.unnest([
-      R.clone(topBottom),
-      R.map((r) => R.unnest([R.repeat(item, n), r, R.repeat(item, n)]), img),
-      R.clone(topBottom),
+    R.clone(topBottom),
+    R.map((r) => R.unnest([R.repeat(item, n), r, R.repeat(item, n)]), img),
+    R.clone(topBottom),
   ]);
 };
 
 const aperture2D = R.curry(([n, k], board) => {
   return R.compose(
-    R.transpose,
-    R.map(R.aperture(n)),
-    R.transpose,
-    R.map(R.aperture(k)))(board);
+      R.transpose,
+      R.map(R.aperture(n)),
+      R.transpose,
+      R.map(R.aperture(k)))(board);
 });
 
 module.exports = {
