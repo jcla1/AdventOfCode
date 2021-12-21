@@ -20,7 +20,7 @@ console.log(checksum);
 const evenQuot = R.compose(
     R.apply(R.divide), R.nth(0),
     R.filter(([a, b]) => a > b && a % b === 0),
-    row => R.xprod(row, row));
+    (row) => R.xprod(row, row));
 
 const result = R.compose(
     R.sum,
