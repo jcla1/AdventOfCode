@@ -16,6 +16,13 @@ const fromPairsWith = R.curry((f) => R.compose(
     R.reduce(R.mergeWith(f), {}),
     R.map(toDict)));
 
+// fixedPoint :: Eq a => (a -> a) -> a -> a
+const fixedPoint = R.curry((f, a) => {
+  const next = f(a);
+  if (R.equals(next, a)) return next;
+  return fixedPoint(f, next);
+});
+
 // onBoard :: [[a]] -> (Int, Int) -> Bool
 const onBoard = R.curry((board, [i, j]) => {
   const height = R.length(board);
@@ -92,6 +99,7 @@ module.exports = {
   isUpperCase, isLowerCase,
   sign, maximum, minimum,
   toDict, fromPairsWith,
+  fixedPoint,
   get, set,
   onBoard, mapBoard, addBoards, sumBoard, zerosLike,
   boardToString, printBoard,
