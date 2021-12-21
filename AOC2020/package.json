@@ -1,0 +1,21 @@
+{
+  "name": "AOC2020",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "advent of code",
+    "puzzle"
+  ],
+  "author": "Joseph Adams",
+  "license": "MIT",
+  "dependencies": {
+    "ramda": "^0.27.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.4.1",
+    "eslint-config-google": "^0.14.0"
+  }
+}
