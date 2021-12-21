@@ -69,6 +69,26 @@ const getNeighbours = R.curry((board, [i, j], diag = false) =>
       R.concat([[i-1, j], [i, j-1], [i, j+1], [i+1, j]],
             diag ? [[i-1, j-1], [i-1, j+1], [i+1, j-1], [i+1, j+1]] : [])));
 
+const pad = (img, n = 2, item = '.') => {
+  const height = R.length(img);
+  const width = R.length(img[0]);
+  const topBottom = R.map((_) => R.repeat(item, width + 2*n), R.range(0, n));
+
+  return R.unnest([
+      R.clone(topBottom),
+      R.map((r) => R.unnest([R.repeat(item, n), r, R.repeat(item, n)]), img),
+      R.clone(topBottom),
+  ]);
+};
+
+const aperture2D = R.curry(([n, k], board) => {
+  return R.compose(
+    R.transpose,
+    R.map(R.aperture(n)),
+    R.transpose,
+    R.map(R.aperture(k)))(board);
+});
+
 module.exports = {
   isUpperCase, isLowerCase,
   sign, maximum, minimum,
@@ -77,4 +97,5 @@ module.exports = {
   onBoard, mapBoard, addBoards, sumBoard, zerosLike,
   boardToString, printBoard,
   getIndicies, getNeighbours,
+  pad, aperture2D,
 };
