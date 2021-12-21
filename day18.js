@@ -30,57 +30,49 @@ const parseSnailNum = (s) => {
     return [[left, right], rest];
   } else {
     // or the snail number is just a plain old integer
-    const [, num, rest, ] = R.match(/^(\d+)(.*)/, s);
+    const [, num, rest] = R.match(/^(\d+)(.*)/, s);
     return [parseInt(num), rest];
   }
 };
 
 const isSimpleNum = (n) => typeof(n) === 'number';
+const view = (p, n) => R.view(R.lensPath(p), n);
+
+// eslint-disable-next-line no-unused-vars
 const snailNumToString = (n) => {
   if (isSimpleNum(n)) return R.toString(n);
   return '[' + snailNumToString(n[0]) + ',' + snailNumToString(n[1]) + ']';
 };
 
 const decend = (n, dir, path) => {
-  if (isSimpleNum(R.view(R.lensPath(path), n))) return path;
-  return decend(n, dir, R.append(dir, path));
+  if (isSimpleNum(view(path, n))) return path;
+  return decend(n, dir, [...path, dir]);
 };
 
-const getLeftNeighbour = (n, path) => {
-  if (R.nth(-1, path) === 1) {
-    return decend(n, 1, R.append(0, R.dropLast(1, path)));
+// dir specifies the direction to look for the neighbour
+const getNeighbour = (n, path, dir) => {
+  if (R.nth(-1, path) === 1 - dir) {
+    return decend(n, 1 - dir, [...R.dropLast(1, path), dir]);
   }
 
-  path = R.dropLastWhile(R.equals(0), path);
+  path = R.dropLastWhile(R.equals(dir), path);
   if (R.equals(path, [])) return [];
 
-  path = R.append(0, R.dropLast(1, path));
-  return decend(n, 1, path);
+  return decend(n, 1 - dir, [...R.dropLast(1, path), dir]);
 };
 
-const getRightNeighbour = (n, path) => {
-  if (R.nth(-1, path) === 0) {
-    return decend(n, 0, R.append(1, R.dropLast(1, path)));
-  }
-
-  path = R.dropLastWhile(R.equals(1), path);
-  if (R.equals(path, [])) return [];
-
-  path = R.append(1, R.dropLast(1, path));
-  return decend(n, 0, path);
-};
-
-const isDepthOne = (tree) => {
-  if (isSimpleNum(tree)) return false;
+const isStub = (tree) => {
+  if (!tree || isSimpleNum(tree)) return false;
   return isSimpleNum(tree[0]) && isSimpleNum(tree[1]);
 };
 
 const split = (num) => [Math.floor(num / 2), Math.ceil(num / 2)];
 const explode = (n, path) => {
-  const leftNeighbourNum = getLeftNeighbour(n, path);
-  const rightNeighbourNum = getRightNeighbour(n, path);
+  const leftNeighbourNum = getNeighbour(n, path, 0);
+  const rightNeighbourNum = getNeighbour(n, path, 1);
 
-  const ep = R.view(R.lensPath(path), n);
+  const ep = view(path, n);
+  // zero out the stub we are exploding
   n = R.set(R.lensPath(path), 0, n);
 
   if (!R.equals(leftNeighbourNum, [])) {
@@ -93,38 +85,31 @@ const explode = (n, path) => {
   return n;
 };
 
-const isValidPath = (n, path) => R.view(R.lensPath(path), n) !== undefined;
+const simplifyByExplosion = (n, path = []) => {
+  if (isSimpleNum(view(path, n))) return n;
 
-const simplifyByExplosion = (n, curPath = []) => {
-  if (!isValidPath(n, curPath)) return n;
-
-  const curNum = R.view(R.lensPath(curPath), n);
-  const path = R.lensPath(curPath);
-
-  if (R.length(curPath) >= 4 && isDepthOne(R.view(path, n))) {
-    return explode(n, curPath);
+  if (path.length >= 4 && isStub(view(path, n))) {
+    return explode(n, path);
   }
 
   // decend into the other branches of the tree
-  const nextN = simplifyByExplosion(n, R.append(0, curPath))
+  const nextN = simplifyByExplosion(n, [...path, 0]);
   if (!R.equals(n, nextN)) return nextN;
-  return simplifyByExplosion(n, R.append(1, curPath));
+  return simplifyByExplosion(n, [...path, 1]);
 };
 
-const simplifyBySplit = (n, curPath = []) => {
-
-  const curNum = R.view(R.lensPath(curPath), n);
-  const path = R.lensPath(curPath);
+const simplifyBySplit = (n, path = []) => {
+  const curNum = view(path, n);
 
   if (isSimpleNum(curNum)) {
-    if(curNum >= 10) return R.set(path, split(curNum), n);
+    if (curNum >= 10) return R.set(R.lensPath(path), split(curNum), n);
     return n;
   }
 
   // decend into the other branches of the tree
-  const nextN = simplifyBySplit(n, R.append(0, curPath))
+  const nextN = simplifyBySplit(n, [...path, 0]);
   if (!R.equals(n, nextN)) return nextN;
-  return simplifyBySplit(n, R.append(1, curPath));
+  return simplifyBySplit(n, [...path, 1]);
 };
 
 const simplifyNum = U.fixedPoint(
@@ -138,8 +123,8 @@ const magnitude = (n) => {
 };
 
 const snailNums = R.compose(
-  R.map(R.o(R.nth(0), parseSnailNum)),
-  R.split('\n'))(input);
+    R.map(R.o(R.nth(0), parseSnailNum)),
+    R.split('\n'))(input);
 
 const [head, ...tail] = snailNums;
 const sumOfNums = R.reduce(
