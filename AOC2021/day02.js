@@ -4,7 +4,7 @@ const fs = require('fs');
 const input = fs.readFileSync('inputs/day02.input', 'utf8').trim();
 
 const cmds = R.compose(
-    R.map(R.o(([cmd, dist]) => [cmd, parseInt(dist)], R.split(' '))),
+    R.map(R.compose(([cmd, dist]) => [cmd, parseInt(dist)], R.split(' '))),
     R.split('\n'))(input);
 
 const encode = ([cmd, dist]) => {

@@ -44,9 +44,9 @@ const mapBoard = R.curry((f, board) => R.map(R.map(f), board));
 const addBoards = R.zipWith(R.zipWith(R.add));
 
 // sumBoard :: Num a => [[a]] -> a
-const sumBoard = R.o(R.sum, R.unnest);
+const sumBoard = R.compose(R.sum, R.unnest);
 
-const boardToString = (board, sep = '') => R.o(
+const boardToString = (board, sep = '') => R.compose(
     R.join('\n'),
     R.map(R.join(sep)))(board);
 const printBoard = (board, sep = '') => console.log(boardToString(board, sep));

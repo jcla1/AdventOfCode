@@ -4,10 +4,10 @@ const fs = require('fs');
 const input = fs.readFileSync('inputs/day21.input', 'utf8').trim();
 
 const startPos = R.compose(
-    R.map(R.o(R.nth(1), R.match(/Player \d starting position: (\d+)/))),
+    R.map(R.compose(R.nth(1), R.match(/Player \d starting position: (\d+)/))),
     R.split('\n'))(input);
 
-const determinsiticGame = ([p1, p2]) => {
+const deterministicGame = ([p1, p2]) => {
   // we're using position 0 to represent 10
   p1 %= 10; p2 %= 10;
 
@@ -32,10 +32,10 @@ const determinsiticGame = ([p1, p2]) => {
   return R.min(p1Score, p2Score) * (die - 1);
 };
 
-console.log(determinsiticGame(startPos));
+console.log(deterministicGame(startPos));
 
 const possibleSeqs = R.map(
-    R.o(R.sum, R.unnest),
+    R.compose(R.sum, R.unnest),
     R.xprod(R.xprod([1, 2, 3], [1, 2, 3]), [1, 2, 3]));
 const quantumGame = R.memoizeWith(
     R.unapply(R.toString),
@@ -57,3 +57,4 @@ const quantumGame = R.memoizeWith(
     });
 
 console.log(R.apply(R.max, quantumGame(startPos, [0, 0])));
+
