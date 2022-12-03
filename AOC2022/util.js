@@ -9,6 +9,7 @@ const maximum = R.reduce(R.max, -Infinity);
 const minimum = R.reduce(R.min, Infinity);
 
 const toIntArr = R.map((n) => parseInt(n));
+const multiIntersection = (s) => R.reduce(R.intersection, R.head(s), R.tail(s));
 
 // toDict :: (k, v) -> {k: v}
 const toDict = (p) => R.fromPairs([p]);
@@ -46,7 +47,7 @@ module.exports = {
   isUpperCase,
   isLowerCase,
   sign, maximum, minimum,
-  toIntArr,
+  toIntArr, multiIntersection,
   toDict, fromPairsWith,
   fixedPoint,
   zerosLike,
