@@ -3,73 +3,67 @@ const fs = require('fs');
 
 const U = require('./util.js');
 
-// We're not trimming today, so that we can also read in the last line.
-const input = fs.readFileSync('inputs/day07.input', 'utf8');
+const input = fs.readFileSync('inputs/day07.input', 'utf8').trim();
 
-const filesToDict = (output) => {
-  const fileSizes = R.map(R.split(' '), output);
-  return R.reduce((dir, file) => {
-    if (file[0] != 'dir') {
-      return R.assoc(file[1], parseInt(file[0]), dir)
-    }
-    return dir;
-  }, {}, fileSizes);
-};
+const processLines = (lines) => {
+  let dirs = {'dirs': {}, 'files': {}}; let currentPath = [];
 
-const processCmd = ([path, dirs], cmd) => {
-  const [command, ...output] = R.split('\n', cmd);
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const [, prg, ...args] = R.split(' ', line);
 
-  const [prg, ...args] = R.split(' ', command);
-  if (prg == 'cd') {
-    const cdDir = args[0];
-    if (cdDir == '/') {
-      path = [];
-    } else if (cdDir == '..') {
-      path = R.dropLast(2, path);
+    if (prg === 'cd') {
+      const cdDir = args[0];
+      if (cdDir == '/') {
+        currentPath = [];
+      } else if (cdDir == '..') {
+        currentPath = R.dropLast(2, currentPath);
+      } else {
+        currentPath = R.concat(currentPath, ['dirs', cdDir]);
+      }
     } else {
-      path = R.concat(path, ['dirs', cdDir]);
-      dirs = R.set(R.lensPath(R.append('name', path)), cdDir, dirs);
-      dirs = R.set(R.lensPath(R.append('files', path)), {}, dirs);
-      dirs = R.set(R.lensPath(R.append('dirs', path)), {}, dirs);
+      while (++i < lines.length && R.head(lines[i]) !== '$') {
+        const [size, name] = R.split(' ', lines[i]);
+        if (size !== 'dir') {
+          dirs = R.set(
+              R.lensPath(R.concat(currentPath, ['files', name])),
+              parseInt(size),
+              dirs);
+        }
+      }
+      i--;
     }
-  } else {
-    dirs = R.set(
-      R.lensPath(R.append('files', path)),
-      filesToDict(R.dropLast(1, output)),
-      dirs)
   }
-
-  return [path, dirs];
-};
-
-const [_, dirStructure] = R.compose(
-  R.reduce(processCmd, ['', {name: '/'}]),
-  R.drop(1),
-  R.split('$ '))(input);
-
-const assocSizes = (dirs) => {
-  const totalFileSizes = R.compose(
-    R.sum,
-    R.values)(dirs['files']);
-
-  const annotatedSubDirs = R.compose(
-    R.map(assocSizes),
-    R.values)(dirs['dirs']);
-
-  const subDirSize = R.compose(
-    R.sum,
-    R.map(R.prop('size')),
-    R.values)(dirs['dirs']);
-
-  dirs['size'] = totalFileSizes + subDirSize;
 
   return dirs;
 };
 
-const sizedDirs = assocSizes(dirStructure);
+const getDirSizes = (dir) => {
+  const sizeOfFiles = R.compose(R.sum, R.values, R.prop('files'))(dir);
+  const subDirSizes = R.isEmpty(dir['dirs']) ?
+    [] : R.compose(R.map(getDirSizes), R.values)(dir['dirs']);
 
-const totalSizeSmallDirs = R.compose(
-  R.sum,
-  R.filter(),
-  R.flatten,
-  R.map())(sizedDirs);
+  const sizeOfSubDirs = R.isEmpty(subDirSizes) ?
+    0 : R.compose(R.sum, R.filter(R.is(Number)))(subDirSizes.flat());
+
+  return R.append(sizeOfFiles + sizeOfSubDirs, subDirSizes);
+};
+
+const dirSizes = R.compose(
+    R.flatten,
+    getDirSizes,
+    processLines,
+    R.split('\n'))(input);
+
+const totalSmallSizeDirs = R.compose(
+    R.sum,
+    R.filter(R.gte(100000)))(dirSizes);
+
+console.log(totalSmallSizeDirs);
+
+const currentFreeSpace = 70000000 - R.last(dirSizes);
+const deletionSize = R.compose(
+    U.minimum,
+    R.filter((s) => s + currentFreeSpace >= 30000000))(dirSizes);
+
+console.log(deletionSize);
