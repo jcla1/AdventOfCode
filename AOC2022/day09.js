@@ -11,12 +11,6 @@ const instr = R.compose(
         R.split(' '))),
     R.split('\n'))(input);
 
-// A cell is its own neighbour.
-const neighbours = ([x, y]) => [
-  [x-1, y-1], [x, y-1], [x+1, y-1],
-  [x-1, y], [x, y], [x+1, y],
-  [x-1, y+1], [x, y+1], [x+1, y+1]];
-
 const step = ([x, y], [u, v]) => [u + U.sign(x - u), v + U.sign(y - v)];
 
 const moveHead = (head, dir) => {
@@ -38,7 +32,7 @@ const tailPositions = (ropeLength) => R.compose(
             rope[0] = moveHead(rope[0], dir);
 
             for (let j = 1; j < rope.length; j++) {
-              if (!R.includes(rope[j], neighbours(rope[j-1]))) {
+              if (!R.includes(rope[j], U.neighbours(rope[j-1]))) {
                 rope[j] = step(rope[j-1], rope[j]);
               }
             }

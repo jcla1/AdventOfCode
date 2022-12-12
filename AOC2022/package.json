@@ -12,7 +12,8 @@
   "author": "Joseph Adams",
   "license": "MIT",
   "dependencies": {
-    "ramda": "^0.28.0"
+    "ramda": "^0.28.0",
+    "heap-js": "^2.2.0"
   },
   "devDependencies": {
     "eslint": "^8.4.1",
