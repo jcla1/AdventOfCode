@@ -8,15 +8,20 @@ const input = fs.readFileSync('inputs/day14.input', 'utf8').trim();
 const toCoord = R.compose(U.toIntArr, R.split(','));
 const transCoord = R.curry(([[u, v], _], [x, y]) => [x - u, y - v]);
 
-const boardToStr = R.compose(R.join('\n'), R.map(R.join('')));
 const drawLine = (board, [[x1, y1], [x2, y2]]) => {
   const len = R.max(Math.abs(x1 - x2), Math.abs(y1 - y2));
   for (let i = 0; i <= len; i++) {
     if (x1 === x2) {
-      board[R.min(y1, y2) + i][x1] = '#';
+      board[x1][R.min(y1, y2) + i] = '#';
     } else {
-      board[y1][R.min(x1, x2) + i] = '#';
+      board[R.min(x1, x2) + i][y1] = '#';
     }
+  }
+};
+
+const drawAllLines = (b, l, lines) => {
+  for (let i = 0; i < lines.length; i++) {
+    drawLine(b, R.map(transCoord(l), lines[i]));
   }
 };
 
@@ -26,7 +31,9 @@ const dropSandGrain = (b, l) => {
     x > l[1][0] ||
     y < l[0][1] ||
     y > l[1][1];
-  const isFree = (cc) => offBoard(cc) || U.get(b, R.reverse(transCoord(l, cc))) === '.';
+  const isFree = (cc) =>
+    offBoard(cc) ||
+    U.get(b, transCoord(l, cc)) === '.';
 
   let x = 500; let y = 0;
   while (!offBoard([x, y])) {
@@ -43,7 +50,7 @@ const dropSandGrain = (b, l) => {
 
   const pos = [x, y];
   if (!offBoard(pos)) {
-    U.set(b, R.reverse(transCoord(l, pos)), 'o');
+    U.set(b, transCoord(l, pos), 'o');
     return pos;
   }
 
@@ -72,7 +79,7 @@ const getLimits = (lines) => {
 };
 
 const getBoardSize = (l) => [l[1][0] - l[0][0] + 1, l[1][1] - l[0][1] + 1];
-const makeBoard = (size) => R.times((_) => R.repeat('.', size[0]), size[1]);
+const makeBoard = (size) => R.times((_) => R.repeat('.', size[1]), size[0]);
 
 const lines = R.compose(
     (ls) => ls.flat(),
@@ -84,8 +91,7 @@ const lines = R.compose(
 
 const limits = getLimits(lines);
 const board = makeBoard(getBoardSize(limits));
-
-R.forEach((l) => drawLine(board, R.map(transCoord(limits), l)), lines);
+drawAllLines(board, limits, lines);
 
 const grainCount = fillWithSand(board, limits);
 console.log(grainCount);
@@ -97,8 +103,7 @@ const linesAndFloor = R.append([
 
 const caveLimits = getLimits(linesAndFloor);
 const cave = makeBoard(getBoardSize(caveLimits));
-
-R.forEach((l) => drawLine(cave, R.map(transCoord(caveLimits), l)), linesAndFloor);
+drawAllLines(cave, caveLimits, linesAndFloor);
 
 // We add an extra grain since the one at the 'spout' is missing.
 const caveGrainCount = fillWithSand(cave, caveLimits) + 1;
