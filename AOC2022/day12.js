@@ -28,7 +28,8 @@ const astar = (graph, start, goal, h = R.always(0)) => {
     for (let i = 0; i < R.length(neighbours); i++) {
       const neighbour = neighbours[i];
 
-      if (!(U.onBoard(graph, neighbour) && canStep(graph, node, neighbour))) continue;
+      if (!(U.onBoard(graph, neighbour) &&
+          canStep(graph, node, neighbour))) continue;
 
       const tentativeGScore = U.get(gScore, node) + 1;
       if (tentativeGScore < U.get(gScore, neighbour)) {
@@ -51,10 +52,10 @@ U.set(terrain, goal, 'z');
 console.log(astar(terrain, start, goal));
 
 const shortestHike = R.compose(
-  R.head,
-  R.sortBy(R.identity),
-  R.filter(R.is(Number)),
-  R.map((s) => astar(terrain, s, goal)),
-  U.findIndicies(R.equals('a')))(terrain);
+    R.head,
+    R.sortBy(R.identity),
+    R.filter(R.is(Number)),
+    R.map((s) => astar(terrain, s, goal)),
+    U.findIndicies(R.equals('a')))(terrain);
 
 console.log(shortestHike);
