@@ -31,7 +31,7 @@ console.log(winnings);
 // how annoying that ramda's reduce doesn't pass you the index
 const scratchcardCounts = wonScratchcardCounts.reduce(
     (counts, won, i) => {
-      const newCards = U.reduce1(R.concat, [
+      const newCards = R.flatten([
         R.repeat(0, i+1),
         R.repeat(counts[i], won),
         R.repeat(0, scratchcards.length - won - i - 1),
