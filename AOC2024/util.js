@@ -1,4 +1,11 @@
 const R = require('ramda');
+const path = require('path');
+const fs = require('fs');
+
+const getInput = (f) => {
+  const inputPath = 'inputs/' + path.basename(f).replace('.js', '.input');
+  return fs.readFileSync(inputPath, 'utf8').trim();
+};
 
 const isUpperCase = (s) => s === s.toUpperCase();
 const isLowerCase = (s) => s === s.toLowerCase();
@@ -11,6 +18,7 @@ const toIntArr = R.map((n) => parseInt(n));
 const reduce1 = R.curry((f, xs) => R.reduce(f, R.head(xs), R.tail(xs)));
 
 module.exports = {
+  getInput,
   isUpperCase,
   isLowerCase,
   sign, maximum, minimum,
