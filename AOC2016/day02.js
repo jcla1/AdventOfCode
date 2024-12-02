@@ -1,7 +1,7 @@
 const R = require('ramda');
-const fs = require('fs');
+const U = require('./util.js');
 
-const input = fs.readFileSync('inputs/day02.input', 'utf8').trim();
+const input = U.getInput(__filename);
 
 const keypad = [
   ['1', '2', '3'],
