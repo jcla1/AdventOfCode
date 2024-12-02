@@ -2,7 +2,10 @@ const R = require('ramda');
 const path = require('path');
 const fs = require('fs');
 
-const getInput = (f) => fs.readFileSync( 'inputs/' + path.basename(f) .replace('.js', '.input'), 'utf8').trim();
+const getInput = (f) => {
+  const inputPath = 'inputs/' + path.basename(f).replace('.js', '.input');
+  return fs.readFileSync(inputPath, 'utf8').trim();
+};
 
 const isUpperCase = (s) => s === s.toUpperCase();
 const isLowerCase = (s) => s === s.toLowerCase();
