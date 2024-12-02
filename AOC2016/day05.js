@@ -1,6 +1,4 @@
 const R = require('ramda');
-const U = require('./util.js');
-
 const crypto = require('crypto');
 
 const input = 'reyedfim';
