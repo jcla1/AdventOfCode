@@ -17,10 +17,19 @@ const minimum = R.reduce(R.min, Infinity);
 const toIntArr = R.map((n) => parseInt(n));
 const reduce1 = R.curry((f, xs) => R.reduce(f, R.head(xs), R.tail(xs)));
 
+const aperture2D = R.curry(([n, k], grid) => {
+  return R.compose(
+      R.transpose,
+      R.map(R.aperture(n)),
+      R.transpose,
+      R.map(R.aperture(k)))(grid);
+});
+
 module.exports = {
   getInput,
   isUpperCase,
   isLowerCase,
   sign, maximum, minimum,
   toIntArr, reduce1,
+  aperture2D,
 };
