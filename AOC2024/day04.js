@@ -1,17 +1,7 @@
 const R = require('ramda');
 const U = require('./util.js');
 
-//const input = U.getInput(__filename);
-const input = `.M.S......
-..A..MSMS.
-.M.S.MAA..
-..A.ASMSM.
-.M.S.M....
-..........
-S.S.S.S.S.
-.A.A.A.A..
-M.M.M.M.M.
-..........`;
+const input = U.getInput(__filename);
 
 const matrixDiagonals = (matrix) => {
   const height = matrix.length;
@@ -50,3 +40,29 @@ const xmasCount = R.compose(
     matrixDiagonals(R.transpose(R.map(R.reverse, letterGrid))),
   ]);
 console.log(xmasCount);
+
+const diag = (M) => {
+  const n = M.length;
+  if (n == 0) return [];
+  const m = M[0].length;
+
+  let diagonal = [];
+  for (var i = 0; i < Math.min(n, m); i++) {
+    diagonal.push(M[i][i]);
+  }
+  return diagonal;
+};
+
+const hasMASCross = (sq) => {
+  const diag1 = diag(sq).join('');
+  const diag2 = diag(R.map(R.reverse, sq)).join('');
+  return (diag1 === 'MAS' || diag1 === 'SAM') && (diag2 === 'MAS' || diag2 === 'SAM');
+};
+
+const countMASCrosses = R.compose(
+  R.length,
+  R.filter(hasMASCross),
+  R.unnest,
+  U.aperture2D([3, 3]));
+
+console.log(countMASCrosses(letterGrid));
