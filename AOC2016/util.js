@@ -42,10 +42,10 @@ const astar = (initialState, goalState, nextStates, heuristic = R.always(0), cos
   openSet.push([heuristic(initialState, goalState), initialState]);
 
   // Map we need for reconstructing the shorest path.
-  let cameFrom = {};
+  const cameFrom = {};
 
   // We don't need an fScore, as that's hidden in the MinHeap
-  let gScore = {};
+  const gScore = {};
   gScore[initialState] = 0;
 
   while (openSet.length !== 0) {

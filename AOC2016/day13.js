@@ -20,10 +20,10 @@ const possibleMoves = ([x, y]) => {
 const shortestPath = U.astar([1, 1], target, possibleMoves);
 console.log(shortestPath.length - 1);
 
-let seen = new Set();
+const seen = new Set();
 let front = new Set(['[1,1]']);
-for (var i = 0; i < 50; i++) {
-  let newFront = new Set();
+for (let i = 0; i < 50; i++) {
+  const newFront = new Set();
   front.forEach((f) => {
     const p = JSON.parse(f);
     const moves = possibleMoves(p);

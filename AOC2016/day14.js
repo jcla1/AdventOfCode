@@ -1,9 +1,7 @@
 const R = require('ramda');
-const U = require('./util.js');
 const crypto = require('crypto');
 
 const input = 'jlmsuwbz';
-// const input = 'abc';
 
 const getMD5 = (s, streched = false) => {
   if (!streched) return crypto.createHash('md5').update(s).digest('hex');
@@ -24,7 +22,7 @@ const matchFive = (s, c) => R.includes(R.repeat(c, 5).join(''), s);
 const lastKeyIndex = (salt, streched = false) => {
   let i = 0;
   let foundKeys = 0;
-  let hashCache = [];
+  const hashCache = [];
 
   const getHash = (i) => {
     if (!hashCache[i]) return getMD5(salt + i, streched);
