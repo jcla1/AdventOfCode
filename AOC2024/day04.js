@@ -14,11 +14,11 @@ const matrixDiagonals = (matrix) => {
     }
   }
   return diagonals;
-}
+};
 
 const letterGrid = R.compose(
-  R.map(R.split('')),
-  R.split('\n'))(input);
+    R.map(R.split('')),
+    R.split('\n'))(input);
 
 const countHorizontalXMAS = R.compose(
     R.sum,
@@ -28,17 +28,17 @@ const countHorizontalXMAS = R.compose(
     R.map(R.join('')));
 
 const xmasCount = R.compose(
-  R.sum,
-  R.map(countHorizontalXMAS))([
-    letterGrid,
-    R.map(R.reverse, letterGrid),
-    R.transpose(letterGrid),
-    R.map(R.reverse, R.transpose(letterGrid)),
-    matrixDiagonals(letterGrid),
-    matrixDiagonals(R.transpose(letterGrid)),
-    matrixDiagonals(R.map(R.reverse, letterGrid)),
-    matrixDiagonals(R.transpose(R.map(R.reverse, letterGrid))),
-  ]);
+    R.sum,
+    R.map(countHorizontalXMAS))([
+  letterGrid,
+  R.map(R.reverse, letterGrid),
+  R.transpose(letterGrid),
+  R.map(R.reverse, R.transpose(letterGrid)),
+  matrixDiagonals(letterGrid),
+  matrixDiagonals(R.transpose(letterGrid)),
+  matrixDiagonals(R.map(R.reverse, letterGrid)),
+  matrixDiagonals(R.transpose(R.map(R.reverse, letterGrid))),
+]);
 console.log(xmasCount);
 
 const diag = (M) => {
@@ -46,8 +46,8 @@ const diag = (M) => {
   if (n == 0) return [];
   const m = M[0].length;
 
-  let diagonal = [];
-  for (var i = 0; i < Math.min(n, m); i++) {
+  const diagonal = [];
+  for (let i = 0; i < Math.min(n, m); i++) {
     diagonal.push(M[i][i]);
   }
   return diagonal;
@@ -60,9 +60,9 @@ const hasMASCross = (sq) => {
 };
 
 const countMASCrosses = R.compose(
-  R.length,
-  R.filter(hasMASCross),
-  R.unnest,
-  U.aperture2D([3, 3]));
+    R.length,
+    R.filter(hasMASCross),
+    R.unnest,
+    U.aperture2D([3, 3]));
 
 console.log(countMASCrosses(letterGrid));
