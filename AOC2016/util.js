@@ -25,21 +25,24 @@ const reduce1 = R.curry((f, xs) => R.reduce(f, R.head(xs), R.tail(xs)));
 // returns the sequence of states that leads from the initial state to the goal
 // state with the lowest cost.
 //
-// The states must be comparable with R.equals, i.e. the stopping criterion is
-// R.equals(node, goalState), where node is the current state.
+// The goal can either be a function that returns true when a given state is the
+// goal, or a specific state. If a specific state is given, states will be
+// compared with R.equals.
 //
 // Not using a proper heurisitic function will reduce this to Dijkstra's
 // algorithm, which is the default.
-const astar = (initialState, goalState, nextStates, heuristic = R.always(0), cost = R.always(1)) => {
+const astar = (initialState, goal, nextStates, heuristic = R.always(0), cost = R.always(1)) => {
   const reconstructPath = (cameFrom, current) => {
     if (R.equals(current, initialState)) return [current];
     return [...reconstructPath(cameFrom, cameFrom[current]), current];
   };
 
+  const areDone = (state) => typeof goal === 'function' ? goal(state) : R.equals(state, goal);
+
   // Items in the heap are tuples of [fScore, node], so the comparison function
   // is the comparison of fScores.
   const openSet = new Heap((a, b) => a[0] - b[0]);
-  openSet.push([heuristic(initialState, goalState), initialState]);
+  openSet.push([heuristic(initialState), initialState]);
 
   // Map we need for reconstructing the shorest path.
   const cameFrom = {};
@@ -51,7 +54,7 @@ const astar = (initialState, goalState, nextStates, heuristic = R.always(0), cos
   while (openSet.length !== 0) {
     // we discard the fScore when popping from the heap
     const [, node] = openSet.pop();
-    if (R.equals(node, goalState)) return reconstructPath(cameFrom, node);
+    if (areDone(node)) return reconstructPath(cameFrom, node);
 
     const neighbours = nextStates(node);
     for (let i = 0; i < neighbours.length; i++) {
@@ -68,7 +71,7 @@ const astar = (initialState, goalState, nextStates, heuristic = R.always(0), cos
         // If it is, but with a higher cost/score than this one, then it will
         // simply be ignored if we're just trying to solve the point-to-point
         // problem (and there is in fact a path between them).
-        openSet.push([tentativeGScore + heuristic(neighbour, goalState), neighbour]);
+        openSet.push([tentativeGScore + heuristic(neighbour), neighbour]);
       }
     }
   }
