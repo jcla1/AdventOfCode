@@ -6,9 +6,9 @@ const input = U.getInput(__filename);
 const progRegEx = /Register A: (\d+)\nRegister B: (\d+)\nRegister C: (\d+)\n\nProgram: ([\d,]+)/;
 
 const parse = R.compose(
-  ([a, b, c, prog]) => ([{A: parseInt(a), B: parseInt(b), C: parseInt(c)}, R.compose(U.toIntArr, R.split(','))(prog)]),
-  R.drop(1),
-  R.match(progRegEx));
+    ([a, b, c, prog]) => ([{A: parseInt(a), B: parseInt(b), C: parseInt(c)}, R.compose(U.toIntArr, R.split(','))(prog)]),
+    R.drop(1),
+    R.match(progRegEx));
 
 const createRunner = (registers, program) => {
   let ip = 0;
@@ -69,12 +69,12 @@ const createRunner = (registers, program) => {
         console.error('Invalid instruction', instr);
     }
     return stepProgram;
-  }
+  };
 
   return stepProgram;
 };
 
-let [registers, program] = parse(input);
+const [registers, program] = parse(input);
 let step = createRunner(registers, program);
 while (!R.is(String, step)) step = step();
 console.log(step);

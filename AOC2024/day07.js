@@ -18,7 +18,8 @@ const helper = (total, running, nums, ops) => {
         return helper(total, running * nums[0], nums.slice(1), ops);
         break;
       case '||':
-        return helper(total, parseInt('' + running + nums[0]),  nums.slice(1), ops);
+        return helper(
+            total, parseInt('' + running + nums[0]), nums.slice(1), ops);
     }
   };
 
@@ -30,21 +31,22 @@ const isValidWithOperators = (total, nums, ops = ['+', '*']) => {
 };
 
 const lines = R.compose(
-  R.map(R.compose(
-    ([total, nums]) => [parseInt(total), U.toIntArr(R.split(' ', nums))],
-    R.split(': '))),
-  R.split('\n'))(input);
+    R.map(R.compose(
+        ([total, nums]) => [parseInt(total), U.toIntArr(R.split(' ', nums))],
+        R.split(': '))),
+    R.split('\n'))(input);
 
 const totalCalibRes = R.compose(
-  R.sum,
-  R.map(R.head),
-  R.filter(R.apply(isValidWithOperators)))(lines);
+    R.sum,
+    R.map(R.head),
+    R.filter(R.apply(isValidWithOperators)))(lines);
 
 console.log(totalCalibRes);
 
 const totalCalibResWithConcat = R.compose(
-  R.sum,
-  R.map(R.head),
-  R.filter(([t, ns]) => isValidWithOperators(t, ns, ['+', '*', '||'])))(lines);
+    R.sum,
+    R.map(R.head),
+    R.filter(
+        ([t, ns]) => isValidWithOperators(t, ns, ['+', '*', '||'])))(lines);
 
 console.log(totalCalibResWithConcat);

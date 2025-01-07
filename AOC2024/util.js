@@ -39,13 +39,17 @@ const aperture2D = R.curry(([n, k], grid) => {
 //
 // Not using a proper heurisitic function will reduce this to Dijkstra's
 // algorithm, which is the default.
-const astar = (initialState, goal, nextStates, heuristic = R.always(0), cost = R.always(1)) => {
+const astar = (initialState,
+    goal,
+    nextStates,
+    heuristic = R.always(0),
+    cost = R.always(1)) => {
   const reconstructPath = (cameFrom, current) => {
     if (R.equals(current, initialState)) return [current];
     return [...reconstructPath(cameFrom, cameFrom[current]), current];
   };
 
-  const areDone = (state) => typeof goal === 'function' ? goal(state) : R.equals(state, goal);
+  const areDone = R.is(Function, goal) ? goal : R.equals(goal);
 
   // Items in the heap are tuples of [fScore, node], so the comparison function
   // is the comparison of fScores.
@@ -83,7 +87,34 @@ const astar = (initialState, goal, nextStates, heuristic = R.always(0), cost = R
       }
     }
   }
-  console.error('No path found.');
+  // If, at the end no path is found, return undefined.
+};
+
+// Breadth-first search that will produce all possible paths from initial state
+// to goal state. Management of the states/graph nodes works the same way as for
+// the A* implementation.
+// One must be careful with regard to loops in the graph, as this will result in
+// an infinite loop trying to find paths.
+const findAllPaths = (initialState, goal, nextStates) => {
+  const areDone = R.is(Function, goal) ? goal : R.equals(goal);
+  const paths = [];
+  const queue = [[initialState]];
+
+  while (queue.length !== 0) {
+    const path = queue.shift();
+    const last = R.last(path);
+    if (areDone(last)) paths.push(path);
+    else {
+      const neighbours = nextStates(last);
+      for (let i = 0; i < neighbours.length; i++) {
+        const neighbour = neighbours[i];
+        // if (!R.contains(neighbour, path)) queue.push([...path, neighbour]);
+        queue.push([...path, neighbour]);
+      }
+    }
+  }
+
+  return paths;
 };
 
 module.exports = {
@@ -93,5 +124,5 @@ module.exports = {
   sign, maximum, minimum,
   toIntArr, reduce1,
   aperture2D,
-  astar,
+  astar, findAllPaths,
 };

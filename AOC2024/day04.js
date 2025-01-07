@@ -56,7 +56,8 @@ const diag = (M) => {
 const hasMASCross = (sq) => {
   const diag1 = diag(sq).join('');
   const diag2 = diag(R.map(R.reverse, sq)).join('');
-  return (diag1 === 'MAS' || diag1 === 'SAM') && (diag2 === 'MAS' || diag2 === 'SAM');
+  return (diag1 === 'MAS' || diag1 === 'SAM') &&
+      (diag2 === 'MAS' || diag2 === 'SAM');
 };
 
 const countMASCrosses = R.compose(

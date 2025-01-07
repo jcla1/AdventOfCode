@@ -22,38 +22,38 @@ const generateAntinodes = ([r1, c1], [r2, c2], d = 1) =>
   [[r1 - d*(r2 - r1), c1 - d*(c2 - c1)], [r2 + d*(r2 - r1), c2 + d*(c2 - c1)]];
 
 const grid = R.compose(
-  R.map(R.split('')),
-  R.split('\n'))(input);
+    R.map(R.split('')),
+    R.split('\n'))(input);
 const antennaPos = matchLocations(/[0-9A-Za-z]/, grid);
 
 const groupedPos = R.compose(
-  R.map(R.map(R.prop(0))),
-  R.groupBy(R.prop(1)))(antennaPos);
+    R.map(R.map(R.prop(0))),
+    R.groupBy(R.prop(1)))(antennaPos);
 
 const antinodes = R.compose(
-  R.uniq,
-  R.unnest,
-  R.values,
-  R.map((ps) => R.compose(
-    R.filter(isOnGrid(grid)),
+    R.uniq,
     R.unnest,
-    R.map(R.apply(generateAntinodes)),
-    R.filter(([a, b]) => !R.equals(a, b)),
-    R.xprod)(ps, ps)))(groupedPos);
+    R.values,
+    R.map((ps) => R.compose(
+        R.filter(isOnGrid(grid)),
+        R.unnest,
+        R.map(R.apply(generateAntinodes)),
+        R.filter(([a, b]) => !R.equals(a, b)),
+        R.xprod)(ps, ps)))(groupedPos);
 console.log(antinodes.length);
 
 const getResonantNodes = (nodes) => {
   const nodePairs = R.compose(
-    R.filter(([a, b]) => !R.equals(a, b)),
-    R.xprod)(nodes, nodes);
+      R.filter(([a, b]) => !R.equals(a, b)),
+      R.xprod)(nodes, nodes);
 
   let antinodes = nodes;
   let dist = 1;
   while (true) {
     const newAntinodes = R.compose(
-      R.filter(isOnGrid(grid)),
-      R.unnest,
-      R.map(([a, b]) => generateAntinodes(a, b, dist)))(nodePairs);
+        R.filter(isOnGrid(grid)),
+        R.unnest,
+        R.map(([a, b]) => generateAntinodes(a, b, dist)))(nodePairs);
 
     if (newAntinodes.length === 0) break;
     antinodes = R.concat(antinodes, newAntinodes);
@@ -65,9 +65,9 @@ const getResonantNodes = (nodes) => {
 };
 
 const numResonantNodes = R.compose(
-  R.length,
-  R.uniq,
-  R.unnest,
-  R.values,
-  R.map(getResonantNodes))(groupedPos);
+    R.length,
+    R.uniq,
+    R.unnest,
+    R.values,
+    R.map(getResonantNodes))(groupedPos);
 console.log(numResonantNodes);

@@ -47,28 +47,26 @@ const getChunkedChecksum = (discMap) => {
   outer: for (let fileNo = 0; fileNo < files.length; fileNo++) {
     const fileLen = files[fileNo];
 
-    //console.log('file', fileNo, 'length after move', fileLen, 'followed by no. spaces', spaces[fileNo]);
     checksum += fileNo * (tn(curIndex + fileLen - 1) - tn(curIndex - 1));
     curIndex += Math.max(fileLen, origFileLen[fileNo]);
 
-    const nextMovableFileIndex = () => fileNo + R.findLastIndex(R.allPass([R.lt(0), R.gte(spaces[fileNo])]), files.slice(fileNo));
+    const nextMovableFileIndex = () => fileNo + R.findLastIndex(
+        R.allPass([R.lt(0), R.gte(spaces[fileNo])]), files.slice(fileNo));
 
     while (spaces[fileNo] > 0 && nextMovableFileIndex() > fileNo) {
       const fillerFileID = nextMovableFileIndex();
       const fillerLen = files[fillerFileID];
-      //console.log('can move file', fillerFileID, 'to', curIndex, 'with length', fillerLen);
 
-      checksum += fillerFileID * (tn(curIndex + fillerLen - 1) - tn(curIndex - 1));
+      checksum += fillerFileID *
+        (tn(curIndex + fillerLen - 1) - tn(curIndex - 1));
 
       curIndex += fillerLen;
       files[fillerFileID] = 0;
       spaces[fileNo] -= fillerLen;
     }
     curIndex += spaces[fileNo];
-    //console.log('ausgleich von', spaces[fileNo], 'spaces');
-    //console.log('-----');
   }
 
-  return  checksum;
+  return checksum;
 };
 console.log(getChunkedChecksum(input));

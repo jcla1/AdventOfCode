@@ -81,6 +81,7 @@ const numLoops = R.compose(
     R.length,
     R.filter(R.identity),
     R.map(([a, b]) => endsInLoop(R.set(R.lensPath([a, b]), '#', cleanMap))),
-    R.filter(([a, b]) => map[a][b] === 'X' && !(a == initialPos[0] && b == initialPos[1])),
+    R.filter(([a, b]) =>
+      map[a][b] === 'X' && !(a == initialPos[0] && b == initialPos[1])),
     R.xprod)(R.range(0, n), R.range(0, m));
 console.log(numLoops);

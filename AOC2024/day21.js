@@ -8,7 +8,10 @@ const charToPos = R.curry((pad, c) => {
   switch (pad) {
     case 'numeric':
       return {
-        'A': [2, 0], '0': [1, 0], '1': [0, 1], '2': [1, 1], '3': [2, 1], '4': [0, 2], '5': [1, 2], '6': [2, 2], '7': [0, 3], '8': [1, 3], '9': [2, 3],
+        'A': [2, 0], '0': [1, 0], '1': [0, 1],
+        '2': [1, 1], '3': [2, 1], '4': [0, 2],
+        '5': [1, 2], '6': [2, 2], '7': [0, 3],
+        '8': [1, 3], '9': [2, 3],
       }[c];
     case 'directional':
       return {
@@ -63,49 +66,49 @@ const getShortestPaths = R.curry((pad, fromChar, toChar) => {
 
     const neighbours = getNeighbours(pad, [x, y]);
     queue.push(...R.map(
-      ([w, z]) => [[w, z], [...path, getStep([x, y], [w, z])]], neighbours));
+        ([w, z]) => [[w, z], [...path, getStep([x, y], [w, z])]], neighbours));
   }
 
   return R.filter((p) => p.length <= shortestLen, foundPaths);
 });
 
 const getShortestSeqs = R.curry(R.memoizeWith(
-  (pad, code) => `${pad}-${code}`,
-  (pad, code) => {
-    const steps = R.aperture(2, ['A', ...code]);
-    return R.compose(
-      R.map(R.map(R.o(R.join(''), R.append('A')))),
-      R.map(R.map(R.join(''))),
-      R.map((s) => getShortestPaths(pad, ...s)))(steps);
-}));
+    (pad, code) => `${pad}-${code}`,
+    (pad, code) => {
+      const steps = R.aperture(2, ['A', ...code]);
+      return R.compose(
+          R.map(R.map(R.o(R.join(''), R.append('A')))),
+          R.map(R.map(R.join(''))),
+          R.map((s) => getShortestPaths(pad, ...s)))(steps);
+    }));
 
 const traverseDirectionalDepth = R.memoizeWith(
-  (code, depth) => `${code}-${depth}`,
-  (code, depth) => {
-    if (depth == 0) return code.length;
-    const steps = getShortestSeqs('directional', code);
+    (code, depth) => `${code}-${depth}`,
+    (code, depth) => {
+      if (depth == 0) return code.length;
+      const steps = getShortestSeqs('directional', code);
 
-    return R.compose(
-      R.sum,
-      R.map(R.compose(U.minimum, R.map(
-        (c) => traverseDirectionalDepth(c, depth-1)))))(steps);
-});
+      return R.compose(
+          R.sum,
+          R.map(R.compose(U.minimum, R.map(
+              (c) => traverseDirectionalDepth(c, depth-1)))))(steps);
+    });
 
 const getComplexity = (code, depth) => {
   const n = parseInt(R.take(3, code));
 
   const p = getShortestSeqs('numeric', code);
   const shortestSeqLen = R.compose(
-    R.sum,
-    R.map(R.compose(U.minimum, R.map(
-      (c) => traverseDirectionalDepth(c, depth)))))(p);
+      R.sum,
+      R.map(R.compose(U.minimum, R.map(
+          (c) => traverseDirectionalDepth(c, depth)))))(p);
 
   return n * shortestSeqLen;
 };
 
 const totalComplexity = (depth = 2) => R.compose(
-  R.sum,
-  R.map((c) => getComplexity(c, depth)))(codes);
+    R.sum,
+    R.map((c) => getComplexity(c, depth)))(codes);
 
 console.log(totalComplexity());
 console.log(totalComplexity(25));
