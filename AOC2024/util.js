@@ -19,6 +19,8 @@ const minimum = R.reduce(R.min, Infinity);
 const toIntArr = R.map((n) => parseInt(n));
 const reduce1 = R.curry((f, xs) => R.reduce(f, R.head(xs), R.tail(xs)));
 
+const mergeAllWith = R.curry((f, xs) => R.reduce(R.mergeWith(f), {}, xs));
+
 const aperture2D = R.curry(([n, k], grid) => {
   return R.compose(
       R.transpose,
@@ -129,6 +131,7 @@ module.exports = {
   isLowerCase,
   sign, maximum, minimum,
   toIntArr, reduce1,
+  mergeAllWith,
   aperture2D,
   astar, findAllPaths,
 };
