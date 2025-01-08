@@ -44,9 +44,15 @@ const astar = (initialState,
     nextStates,
     heuristic = R.always(0),
     cost = R.always(1)) => {
+  // non-recursive version of reconstructPath, as for long paths it will blow
+  // over the stack limit.
   const reconstructPath = (cameFrom, current) => {
-    if (R.equals(current, initialState)) return [current];
-    return [...reconstructPath(cameFrom, cameFrom[current]), current];
+    const path = [current];
+    while (!R.equals(current, initialState)) {
+      current = cameFrom[current];
+      path.unshift(current);
+    }
+    return path;
   };
 
   const areDone = R.is(Function, goal) ? goal : R.equals(goal);
