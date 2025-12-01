@@ -1,6 +1,6 @@
-import * as R from 'ramda';
-import * as path from 'path';
-import * as fs from 'fs';
+const fs = require('fs');
+const path = require('path');
+const R = require('ramda');
 
 const getInput = (f) => {
   const inputPath = 'inputs/' + path.basename(f).replace('.js', '.input');
@@ -17,7 +17,7 @@ const minimum = R.reduce(R.min, Infinity);
 const toIntArr = R.map((n) => parseInt(n));
 const reduce1 = R.curry((f, xs) => R.reduce(f, R.head(xs), R.tail(xs)));
 
-export {
+module.exports = {
   getInput,
   isUpperCase,
   isLowerCase,
