@@ -17,10 +17,18 @@ const minimum = R.reduce(R.min, Infinity);
 const toIntArr = R.map((n) => parseInt(n));
 const reduce1 = R.curry((f, xs) => R.reduce(f, R.head(xs), R.tail(xs)));
 
+// Monadic fold for lists
+// foldM :: (a -> b -> [a]) -> a -> [b] -> [a]
+const foldM = R.curry((f, acc, xs) => R.reduce(
+  (accP, x) => R.chain((accV) => f(accV, x), accP),
+  [acc],
+  xs));
+
 module.exports = {
   getInput,
   isUpperCase,
   isLowerCase,
   sign, maximum, minimum,
   toIntArr, reduce1,
+  foldM,
 };
