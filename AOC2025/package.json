@@ -13,7 +13,8 @@
   "license": "MIT",
   "dependencies": {
     "heap-js": "^2.2.0",
-    "ramda": "^0.32.0"
+    "ramda": "^0.32.0",
+    "@easy-data-structure-js/union-find": "^1.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
