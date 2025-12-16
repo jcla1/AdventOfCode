@@ -3,7 +3,7 @@ const U = require('./util.js');
 
 const input = U.getInput(__filename);
 
-const findLargestIndex = (xs, left, right) => left + xs.findIndex(Math.max(...xs.slice(left, right));
+const findLargestIndex = (xs, left, right) => left + xs.findIndex(Math.max(...xs.slice(left, right)));
 
 const batteries = R.compose(
   R.map(R.o(U.toIntArr, R.split(''))),

@@ -1,10 +1,13 @@
-import * as R from 'ramda';
-import * as U  from './util.js';
+const R = require('ramda');
+const U = require('./util.js');
 
-import { Heap } from 'heap-js';
-import { UnionFind } from '@easy-data-structure-js/union-find';
+const Heap = require('heap-js').Heap;
 
-const input = U.getInput(import.meta.filename);
+// why, why, why!?
+import('@easy-data-structure-js/union-find').then((m) => {
+const UnionFind = m.UnionFind;
+
+const input = U.getInput(__filename);
 
 const dist = ([x1, y1, z1], [x2, y2, z2]) => (x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2;
 
@@ -52,3 +55,5 @@ while (true) {
     break;
   }
 }
+
+});
