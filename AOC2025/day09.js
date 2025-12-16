@@ -1,21 +1,13 @@
 const R = require('ramda');
 const U = require('./util.js');
 
-//const input = U.getInput(__filename);
-const input = `7,1
-11,1
-11,7
-9,7
-9,5
-2,5
-2,3
-7,3`;
+const input = U.getInput(__filename);
+
+const area = ([x1, y1], [x2, y2]) => (Math.abs(x1 - x2) + 1) * (Math.abs(y1 - y2) + 1);
 
 const points = R.compose(
   R.map(R.o(U.toIntArr, R.split(','))),
   R.split('\n'))(input);
-
-const area = ([x1, y1], [x2, y2]) => (Math.abs(x1 - x2) + 1) * (Math.abs(y1 - y2) + 1);
 
 const maxArea = R.compose(
   U.maximum,
@@ -23,14 +15,19 @@ const maxArea = R.compose(
   R.xprod)(points, points);
 console.log(maxArea);
 
-const pointInInterior = ([[x1, y1], [x2, y2]]) => ([px, py]) =>
-  (px > Math.min(x1, x2) && px < Math.max(x1, x2) &&
-   py > Math.min(y1, y2) && py < Math.max(y1, y2));
+const sortCoords = ([[x1, y1], [x2, y2]]) => [[R.min(x1, x2), R.min(y1, y2)], [R.max(x1, x2), R.max(y1, y2)]];
 
-const isInEnclosed = ([[x1, y1], [x2, y2]]) =>
+const sides = R.compose(
+  R.map(sortCoords),
+  R.aperture(2))(points);
+
+const isInEnclosed = ([[x1, y1], [x2, y2]]) => R.none(([[ex1, ey1], [ex2, ey2]]) =>
+    x1 < ex2 && ex1 < x2 && y1 < ey2 && ey1 < y2, sides);
 
 const squares = R.compose(
-  R.map((sq) => [...sq, area(...sq), isInEnclosed(sq)]),
+  U.maximum,
+  R.map(R.apply(area)),
+  R.filter(isInEnclosed),
+  R.map(sortCoords),
   R.xprod)(points, points);
-
 console.log(squares);
