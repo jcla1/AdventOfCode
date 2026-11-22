@@ -59,7 +59,7 @@ const findMinButtonPresses = async ({ buttons, joltages }) => {
     solver.add(presses[i].ge(0));
   }
 
-  const resJoltages = Array.from({ length: joltages.length }, (_, j) => Z3.Int.val(0));
+  const resJoltages = Array.from({ length: joltages.length }, (_, __) => Z3.Int.val(0));
   for (let k = 0; k < joltages.length; k++) {
     for (let i = 0; i < buttons.length; i++) {
       if (buttons[i].includes(k)) {

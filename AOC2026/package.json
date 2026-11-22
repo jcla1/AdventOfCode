@@ -1,0 +1,27 @@
+{
+  "name": "AOC2026",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "advent of code",
+    "puzzle"
+  ],
+  "author": "Joseph Adams",
+  "license": "MIT",
+  "dependencies": {
+    "@easy-data-structure-js/union-find": "^1.0.0",
+    "heap-js": "^2.2.0",
+    "mathjs": "^15.1.0",
+    "ramda": "^0.32.0",
+    "z3-solver": "^5.4.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0"
+  }
+}
